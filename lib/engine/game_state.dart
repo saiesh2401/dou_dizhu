@@ -242,6 +242,11 @@ class GameState {
 
     // Check for win
     if (newHand.isEmpty) {
+      // Determine if player is on winning team
+      final isPlayerLandlord = landlordIndex == 0;
+      final isWinnerLandlord = playerIndex == landlordIndex;
+      final playerWins = isPlayerLandlord == isWinnerLandlord;
+
       return GameState(
         phase: GamePhase.gameOver,
         playerHands: newHands,
@@ -253,7 +258,7 @@ class GameState {
         lastPlayedBy: playerIndex,
         passCount: 0,
         winnerIndex: playerIndex,
-        uiMessage: 'Player $playerIndex wins!',
+        uiMessage: playerWins ? 'Your team wins!' : 'Player $playerIndex wins!',
       );
     }
 

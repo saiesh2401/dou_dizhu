@@ -49,14 +49,14 @@ class OpponentHandComponent extends PositionComponent {
   }
 
   void _drawLeftCards(Canvas canvas) {
-    const cardWidth = 40.0;
-    const cardHeight = 56.0;
-    const spacing = 3.0;
+    const cardWidth = 60.0; // Increased from 40
+    const cardHeight = 84.0; // Increased from 56
+    const spacing = 8.0; // Increased from 3
 
     for (int i = 0; i < math.min(cardCount, 10); i++) {
       final rect = Rect.fromLTWH(0, 40 + i * spacing, cardWidth, cardHeight);
 
-      final rRect = RRect.fromRectAndRadius(rect, const Radius.circular(4));
+      final rRect = RRect.fromRectAndRadius(rect, const Radius.circular(5));
 
       final bgPaint = Paint()
         ..color = const Color(0xFF8B4513)
@@ -65,7 +65,7 @@ class OpponentHandComponent extends PositionComponent {
       final borderPaint = Paint()
         ..color = Colors.black
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1;
+        ..strokeWidth = 1.5;
 
       canvas.drawRRect(rRect, bgPaint);
       canvas.drawRRect(rRect, borderPaint);
@@ -73,9 +73,9 @@ class OpponentHandComponent extends PositionComponent {
   }
 
   void _drawTopCards(Canvas canvas) {
-    const cardWidth = 40.0;
-    const cardHeight = 56.0;
-    const spacing = 5.0;
+    const cardWidth = 80.0; // Increased from 40
+    const cardHeight = 112.0; // Increased from 56
+    const spacing = 25.0; // Increased from 5 for better visibility
 
     final totalWidth = math.min(cardCount, 10) * spacing + cardWidth;
     final startX = -totalWidth / 2;
@@ -88,7 +88,7 @@ class OpponentHandComponent extends PositionComponent {
         cardHeight,
       );
 
-      final rRect = RRect.fromRectAndRadius(rect, const Radius.circular(4));
+      final rRect = RRect.fromRectAndRadius(rect, const Radius.circular(6));
 
       final bgPaint = Paint()
         ..color = const Color(0xFF8B4513)
@@ -97,7 +97,7 @@ class OpponentHandComponent extends PositionComponent {
       final borderPaint = Paint()
         ..color = Colors.black
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1;
+        ..strokeWidth = 2;
 
       canvas.drawRRect(rRect, bgPaint);
       canvas.drawRRect(rRect, borderPaint);

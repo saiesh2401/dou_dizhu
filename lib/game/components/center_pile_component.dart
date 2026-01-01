@@ -6,6 +6,7 @@ import 'card_sprite.dart';
 
 class CenterPileComponent extends PositionComponent {
   final List<CardSprite> cardSprites = [];
+  String lastPlayerName = '';
 
   CenterPileComponent() : super(anchor: Anchor.center);
 
@@ -14,7 +15,18 @@ class CenterPileComponent extends PositionComponent {
       // Remove old cards
       removeAll(cardSprites);
       cardSprites.clear();
+      lastPlayerName = '';
       return;
+    }
+
+    // Update player name
+    final playerIndex = state.lastPlayedBy;
+    if (playerIndex == 0) {
+      lastPlayerName = 'You';
+    } else if (playerIndex == state.landlordIndex) {
+      lastPlayerName = 'Landlord';
+    } else {
+      lastPlayerName = 'Farmer ${playerIndex + 1}';
     }
 
     // Check if cards changed
@@ -36,8 +48,9 @@ class CenterPileComponent extends PositionComponent {
 
     // Add new cards with animation
     final cards = newCards;
-    final cardWidth = 50.0;
-    final spacing = 30.0;
+    final cardWidth = 110.0; // Updated to match actual card size
+    final spacing =
+        115.0; // Increased to spread cards completely apart (no overlap)
 
     final totalWidth = (cards.length - 1) * spacing + cardWidth;
     final startX = -totalWidth / 2 + cardWidth / 2;
@@ -63,6 +76,46 @@ class CenterPileComponent extends PositionComponent {
 
       cardSprites.add(cardSprite);
       add(cardSprite);
+    }
+  }
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+
+    // Draw player name label if there are cards
+    if (lastPlayerName.isNotEmpty) {
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: lastPlayerName,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+
+      // Draw background
+      final padding = 8.0;
+      final bgRect = Rect.fromLTWH(
+        -textPainter.width / 2 - padding,
+        -100,
+        textPainter.width + padding * 2,
+        textPainter.height + padding * 2,
+      );
+
+      final bgPaint = Paint()
+        ..color = Colors.black.withOpacity(0.6)
+        ..style = PaintingStyle.fill;
+
+      final rRect = RRect.fromRectAndRadius(bgRect, const Radius.circular(8));
+      canvas.drawRRect(rRect, bgPaint);
+
+      // Draw text
+      textPainter.paint(canvas, Offset(-textPainter.width / 2, -100 + padding));
     }
   }
 }

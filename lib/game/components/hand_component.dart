@@ -49,11 +49,11 @@ class HandComponent extends PositionComponent {
 
         // Animate position change if selection changed
         if (isSelected != wasSelected) {
-          final cardWidth = 60.0;
-          final maxSpacing = 40.0;
-          final minSpacing = 15.0;
+          final cardWidth = 110.0; // Updated to match actual card size
+          final maxSpacing = 70.0; // Increased for better visibility
+          final minSpacing = 35.0; // Increased minimum spacing
           final totalCards = hand.length;
-          final availableWidth = 350.0;
+          final availableWidth = 800.0; // Increased available width
           var spacing = (availableWidth - cardWidth) / (totalCards - 1);
           spacing = spacing.clamp(minSpacing, maxSpacing);
           final totalWidth = (totalCards - 1) * spacing + cardWidth;
@@ -85,13 +85,13 @@ class HandComponent extends PositionComponent {
     Set<String> selectedIds, {
     bool shouldAnimate = false,
   }) {
-    final cardWidth = 60.0;
-    final maxSpacing = 40.0;
-    final minSpacing = 15.0;
+    final cardWidth = 110.0; // Updated to match actual card size
+    final maxSpacing = 70.0; // Increased for better visibility
+    final minSpacing = 35.0; // Increased minimum spacing
 
     // Calculate spacing based on number of cards
     final totalCards = hand.length;
-    final availableWidth = 350.0;
+    final availableWidth = 800.0; // Increased available width
     var spacing = (availableWidth - cardWidth) / (totalCards - 1);
     spacing = spacing.clamp(minSpacing, maxSpacing);
 

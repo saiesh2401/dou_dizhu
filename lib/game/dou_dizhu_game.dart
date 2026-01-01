@@ -5,6 +5,7 @@ import 'components/table_component.dart';
 import 'components/hand_component.dart';
 import 'components/opponent_hand_component.dart';
 import 'components/center_pile_component.dart';
+import 'components/character_component.dart';
 
 typedef GameStateReader = GameState Function();
 typedef CardTapHandler = void Function(String cardId);
@@ -20,6 +21,9 @@ class DouDizhuGame extends FlameGame {
   late OpponentHandComponent leftOpponent;
   late OpponentHandComponent topOpponent;
   late CenterPileComponent centerPile;
+  late CharacterComponent leftCharacter;
+  late CharacterComponent topCharacter;
+  late CharacterComponent rightCharacter;
 
   @override
   Color backgroundColor() => const Color(0xFF0B5D3B);
@@ -44,6 +48,31 @@ class DouDizhuGame extends FlameGame {
 
     topOpponent = OpponentHandComponent(opponentPosition: OpponentPosition.top);
     add(topOpponent);
+
+    // Add character sprites
+    leftCharacter = CharacterComponent(
+      characterPosition: CharacterPosition.left,
+      playerIndex: 1,
+      playerName: 'Player 2',
+      coins: 1922,
+    );
+    add(leftCharacter);
+
+    topCharacter = CharacterComponent(
+      characterPosition: CharacterPosition.top,
+      playerIndex: 2,
+      playerName: 'Player 3',
+      coins: 2036,
+    );
+    add(topCharacter);
+
+    rightCharacter = CharacterComponent(
+      characterPosition: CharacterPosition.right,
+      playerIndex: 0,
+      playerName: 'You',
+      coins: 1922,
+    );
+    add(rightCharacter);
 
     // Add player hand (bottom)
     playerHand = HandComponent(onCardTapped: onCardTapped);
@@ -73,6 +102,11 @@ class DouDizhuGame extends FlameGame {
 
     leftOpponent.position = Vector2(20, size.y * 0.3);
     topOpponent.position = Vector2(size.x / 2, 40);
+
+    // Position characters
+    leftCharacter.position = Vector2(80, size.y * 0.5);
+    topCharacter.position = Vector2(size.x - 100, 120);
+    rightCharacter.position = Vector2(size.x - 100, size.y - 120);
 
     playerHand.position = Vector2(size.x / 2, size.y - 180);
   }

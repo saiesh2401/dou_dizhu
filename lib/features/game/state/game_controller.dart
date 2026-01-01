@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../engine/game_state.dart';
 import '../../../engine/deck.dart';
-import '../../../engine/ai/ai_easy.dart';
+import '../../../engine/ai/ai_expert.dart';
+import '../../../engine/card_model.dart';
+import '../../../engine/hand_type.dart';
 
 class GameController extends Notifier<GameState> {
   @override
@@ -78,7 +80,27 @@ class GameController extends Notifier<GameState> {
     final aiPlayerIndex = state.currentTurn;
     final aiHand = state.playerHands[aiPlayerIndex];
 
-    final aiMove = AiEasy.findMove(aiHand, state.lastPlayedHand);
+    List<CardModel>? aiMove;
+
+    try {
+      aiMove = AiExpert.findMove(
+        aiHand,
+        state.lastPlayedHand,
+        playerIndex: aiPlayerIndex,
+        landlordIndex: state.landlordIndex,
+        lastPlayedBy: state.lastPlayedBy,
+        opponentHandSizes: [
+          state.playerHands[0].length,
+          state.playerHands[1].length,
+          state.playerHands[2].length,
+        ],
+      );
+    } catch (e, stackTrace) {
+      // If expert AI fails, use simple fallback
+      print('Expert AI error: $e');
+      print('Stack trace: $stackTrace');
+      aiMove = _findSimpleFallbackMove(aiHand, state.lastPlayedHand);
+    }
 
     if (aiMove != null) {
       // AI plays cards
@@ -102,6 +124,59 @@ class GameController extends Notifier<GameState> {
         Future.delayed(const Duration(milliseconds: 800), _processAiTurns);
       }
     }
+  }
+
+  /// Simple fallback move finder (used if expert AI fails)
+  List<CardModel>? _findSimpleFallbackMove(
+    List<CardModel> hand,
+    HandAnalysis? lastPlayed,
+  ) {
+    // If no last play, play lowest card
+    if (lastPlayed == null) {
+      return [hand.first];
+    }
+
+    // Try to find any legal move
+    final rankCounts = <int, List<CardModel>>{};
+    for (final card in hand) {
+      rankCounts.putIfAbsent(card.power, () => []).add(card);
+    }
+
+    final requiredPower = lastPlayed.compareValue;
+
+    // Try to beat based on type
+    switch (lastPlayed.type) {
+      case HandType.single:
+        for (final card in hand) {
+          if (card.power > requiredPower) {
+            return [card];
+          }
+        }
+        break;
+
+      case HandType.pair:
+        for (final power in rankCounts.keys.toList()..sort()) {
+          if (rankCounts[power]!.length >= 2 && power > requiredPower) {
+            return rankCounts[power]!.take(2).toList();
+          }
+        }
+        break;
+
+      case HandType.triple:
+        for (final power in rankCounts.keys.toList()..sort()) {
+          if (rankCounts[power]!.length >= 3 && power > requiredPower) {
+            return rankCounts[power]!.take(3).toList();
+          }
+        }
+        break;
+
+      default:
+        // For complex types, just pass
+        break;
+    }
+
+    // No legal move found, return null to pass
+    return null;
   }
 
   /// Reset game

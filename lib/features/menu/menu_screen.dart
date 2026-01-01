@@ -19,6 +19,39 @@ class MenuScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Cora's picture
+              Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFFFFD700), width: 4),
+                  boxShadow: const [
+                    BoxShadow(
+                      blurRadius: 20.0,
+                      color: Colors.black45,
+                      offset: Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/cora_home.png',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: const Color(0xFF0A4D2E),
+                        child: const Icon(
+                          Icons.person,
+                          size: 100,
+                          color: Color(0xFFFFD700),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 40),
               const Text(
                 'Cora',
                 style: TextStyle(
